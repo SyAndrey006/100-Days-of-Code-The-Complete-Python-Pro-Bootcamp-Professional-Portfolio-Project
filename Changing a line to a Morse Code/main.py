@@ -56,6 +56,7 @@ MORSE_CODE_DICT = {
     ' ': '/'
 }
 
+
 def change_string_to_morse_code(text):
     text = text.upper()
     morse_code = []
@@ -65,6 +66,7 @@ def change_string_to_morse_code(text):
         else:
             morse_code.append('?')
     return ' '.join(morse_code)
+
 
 user_input_data = input("Enter a string to convert to Morse code: ")
 morse_code_data = change_string_to_morse_code(user_input_data)
