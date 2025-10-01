@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Andrii's Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <h1>Andrii Synelnyk</h1>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h3>About Me</h3>
+      <p>
+        <p>Student at <strong>Technical University of Munich</strong>, Bachelor in Information Engineering.</p>
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>My Skills</h3>
+      <ul>
+        <li>Programming: C++, Python, JavaScript</li>
+        <li>Web Development: HTML, CSS, Flask</li>
+        <li>Languages: English (IELTS 6.5), German (TELC B2)</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Andrii Synelnyk</p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
