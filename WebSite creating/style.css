@@ -10,22 +10,37 @@ body {
   flex-direction: column;
 }
 
+.social-icons {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 15px;
+}
+.social-icons a {
+  color: white;
+  background: rgba(255,255,255,0.2);
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 22px;
+  transition: 0.3s;
+}
+.social-icons a:hover {
+  background: rgba(255,255,255,0.4);
+  transform: scale(1.1);
+}
+
 header {
-  padding: 100px 20px 40px;
-  background: rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
+  padding: 120px 20px 40px;
 }
 
 h1 {
   font-size: 3em;
   margin: 0;
-  font-weight: bold;
-  letter-spacing: 2px;
-}
-
-h2 {
-  margin: 10px 0 30px;
-  font-weight: 300;
 }
 
 .container {
@@ -41,8 +56,8 @@ h2 {
 .card {
   width: 250px;
   height: 250px;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(25px);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px);
   border-radius: 20px;
   padding: 20px;
   text-align: left;
@@ -61,11 +76,6 @@ h2 {
   border-bottom: 2px solid rgba(255,255,255,0.2);
   padding-bottom: 8px;
   font-size: 1.2em;
-}
-
-.card p, .card ul {
-  font-size: 0.95em;
-  line-height: 1.4;
 }
 
 footer {
