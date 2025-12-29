@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Color Extractor</title>
+</head>
+<body>
+
+<h2>Upload image</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" required>
+    <button type="submit">Upload</button>
+</form>
+
+<br>
+
+{% for color in colors %}
+    <div style="
+        width:100px;
+        height:100px;
+        background: {{ color }};
+        display:inline-block;
+        margin:5px;
+        text-align:center;
+        line-height:100px;
+        color:white;
+        font-weight:bold;">
+        {{ color }}
+    </div>
+{% endfor %}
+
+</body>
+</html>
