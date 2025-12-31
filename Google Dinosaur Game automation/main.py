@@ -9,12 +9,12 @@ print("Program starts in 3 seconds, switch to window...")
 time.sleep(3)
 
 while True:
-    #for cactus
+    #for big cactus
     img = ImageGrab.grab(
         bbox=(
-            dino_x + 80,
-            dino_y + 5,
-            dino_x + 135,
+            dino_x + 40,
+            dino_y + 3,
+            dino_x + 140,
             dino_y + 33
         )
     )
@@ -29,10 +29,10 @@ while True:
 
             if diff > 100:
                 pyautogui.press("space")
-                time.sleep(0.215 )
-                pyautogui.keyDown ("down")
-                time.sleep(0.1)
-                pyautogui.keyUp( "down")
+                # time.sleep(0.215 )
+                # pyautogui.keyDown ("down")
+                # time.sleep(0.1)
+                # pyautogui.keyUp( "down")
                 is_obstacle_detected = True
                 break
 
@@ -40,15 +40,15 @@ while True:
             break
 
     if is_obstacle_detected:
-        time.sleep(0.01)
+        time.sleep(0.004)
         continue
 
     #for flying dino
     img = ImageGrab.grab(
         bbox=(
-            dino_x + 80,
+            dino_x + 40,
             dino_y - 10,
-            dino_x + 140,
+            dino_x + 120,
             dino_y - 8
         )
     )
@@ -63,7 +63,7 @@ while True:
 
             if diff > 100:
                 pyautogui.keyDown("down")
-                time.sleep(0.3)
+                time.sleep(0.25)
                 pyautogui.keyUp("down")
                 is_obstacle_detected = True
                 break
@@ -71,7 +71,7 @@ while True:
         if is_obstacle_detected:
             break
 
-    time.sleep(0.01)
+    time.sleep(0.004)
 
 
 # from PIL import ImageGrab
