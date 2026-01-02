@@ -1,11 +1,17 @@
 import turtle
 import time
 
+
 # -----Default setting-----
+# Window
 screen_width = 800
 screen_height = 600
+
+# Player and bullet
 step_width = 20
 bullet_speed = 5 #pixels per update cycle
+
+# Aliens
 alien_speed = 20
 alien_speed_down = 20
 alien_distance_horizontal = 50
@@ -15,7 +21,9 @@ aliens_in_column = 3
 alien_y_start = (int)(screen_height / 2) - 50
 alien_x_start = -(int)(screen_width / 2) + 100
 
+hud_y = -screen_height / 2 + 100
 
+# Objects size
 player_width = 20
 player_height = 20
 bullet_width = 3
@@ -23,12 +31,13 @@ bullet_height = 10
 alien_width = 20
 alien_height = 16
 
-hud_y = -screen_height / 2 + 100
-
+# Game Parameters
 game_over = False
 win = False
 player_hp = 3
 score = 0
+alien_timer = 1 # How often we update aliens. Default every 1 second
+alien_timer_decrease = (alien_timer - 0.1) / (aliens_in_row * aliens_in_column)
 
 
 # -----Window screen-----
@@ -62,8 +71,6 @@ hp_text.hideturtle()
 hp_text.color("white")
 hp_text.penup()
 hp_text.goto(-screen_width / 2 + 20, hud_y - 40)
-
-
 
 # Draw and update our score
 def draw_score():
@@ -161,6 +168,9 @@ def aliens_move():
     if need_to_go_down:
         for alien in aliens:
             if alien.isvisible():
+                if alien.ycor() - alien_speed_down < hud_y +  alien_height/2: # Check if we are not below the HUD line, if below aliens disappear
+                    alien.hideturtle()
+                    continue
                 alien.sety(alien.ycor() - alien_speed_down)
 
         aliens_direction_to_right = not aliens_direction_to_right
@@ -217,7 +227,7 @@ while not game_over:
             bullet.hideturtle()
             is_ready_to_launch = True
 
-    if time.time() - last_move_time > 1:
+    if time.time() - last_move_time > alien_timer:
         aliens_move()
         last_move_time = time.time()
 
@@ -228,6 +238,7 @@ while not game_over:
             is_ready_to_launch = True
             alien.hideturtle()
             score += 10
+            alien_timer -= alien_timer_decrease
             draw_score()
 
     if all_aliens_dead():
