@@ -325,6 +325,8 @@ while not game_over:
     time.sleep(0.02)
 
 # -----Game Over-----
+window.clear()
+window.bgcolor("black")
 text = turtle.Turtle()
 text.hideturtle()
 text.color("white")
