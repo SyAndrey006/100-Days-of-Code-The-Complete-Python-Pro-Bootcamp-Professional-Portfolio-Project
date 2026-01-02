@@ -26,6 +26,7 @@ alien_height = 16
 hud_y = -screen_height / 2 + 100
 
 game_over = False
+win = False
 player_hp = 3
 score = 0
 
@@ -134,6 +135,14 @@ window.update()
 
 aliens_direction_to_right  = True
 
+# Finds number of aliens left
+def aliens_left():
+    count = 0
+    for alien in aliens:
+        if alien.isvisible():
+            count += 1
+    return count
+
 # A move function for aliens
 def aliens_move():
     global aliens_direction_to_right , game_over
@@ -175,6 +184,11 @@ def aliens_move():
             if player_hp <= 0:
                 game_over = True
 
+# Finds if all aliens are dead
+def all_aliens_dead():
+    if aliens_left() == 0:
+        return True
+    return False
 
 # -----Collision check-----
 def is_collision(t1, w1, h1, t2, w2, h2):
@@ -216,14 +230,26 @@ while not game_over:
             score += 10
             draw_score()
 
+    if all_aliens_dead():
+        game_over = True
+        win = True
+        break
+
     time.sleep(0.02)
 
 # -----Game Over-----
 text = turtle.Turtle()
-text.color("red")
-text.penup()
 text.hideturtle()
-text.goto(0, 0)
-text.write("GAME OVER", align="center", font=("Arial", 36, "bold"))
+text.color("white")
+text.penup()
+text.goto(0, 40)
+
+if win:
+    text.write("YOU WIN!", align="center", font=("Arial", 36, "bold"))
+else:
+    text.write("GAME OVER", align="center", font=("Arial", 36, "bold"))
+
+text.goto(0, -10)
+text.write(f"Score: {score}", align="center", font=("Arial", 20, "normal"))
 
 window.mainloop()
