@@ -283,13 +283,21 @@ while not game_over:
             alien_missiles.remove(missile)
             continue
 
-        if is_collision(missile, alien_missile_width, alien_missile_height,player, player_width, player_height):
+        if is_collision(missile, alien_missile_width, alien_missile_height,player, player_width, player_height): #Check collision with a player
             missile.hideturtle()
             alien_missiles.remove(missile)
             player_hp -= 1
             draw_hp()
             if player_hp <= 0:
                 game_over = True
+
+        if not is_ready_to_launch and is_collision(bullet, bullet_width, bullet_height, missile, alien_missile_width, alien_missile_height): #Check collision with a bullet
+            bullet.hideturtle()
+            is_ready_to_launch = True
+            missile.hideturtle()
+            alien_missiles.remove(missile)
+            score += 10 # Extra points for destroying a missile
+            draw_score()
 
     if random.randint(1, missile_timer) == 1:
         missile_shoot()
@@ -304,7 +312,7 @@ while not game_over:
             bullet.hideturtle()
             is_ready_to_launch = True
             alien.hideturtle()
-            score += 10
+            score += 10 # Points for destroying an alien spaceship
             missile_timer -= 1
             alien_timer -= alien_timer_decrease
             draw_score()
