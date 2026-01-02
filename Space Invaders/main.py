@@ -1,6 +1,7 @@
 import turtle
 import time
-
+import random
+from turtledemo.sorting_animate import show_text
 
 # -----Default setting-----
 # Window
@@ -21,15 +22,22 @@ aliens_in_column = 3
 alien_y_start = (int)(screen_height / 2) - 50
 alien_x_start = -(int)(screen_width / 2) + 100
 
+# Alien's missile
+max_alien_missiles = aliens_in_row
+alien_missile_speed = 3
+
+
 hud_y = -screen_height / 2 + 100
 
 # Objects size
 player_width = 20
 player_height = 20
-bullet_width = 3
-bullet_height = 10
+bullet_width = 20 * 0.15
+bullet_height = 20 * 0.5
 alien_width = 20
-alien_height = 16
+alien_height = 20 * 0.8
+alien_missile_width = 20 * 0.25
+alien_missile_height = 20 * 0.7
 
 # Game Parameters
 game_over = False
@@ -38,6 +46,7 @@ player_hp = 3
 score = 0
 alien_timer = 1 # How often we update aliens. Default every 1 second
 alien_timer_decrease = (alien_timer - 0.1) / (aliens_in_row * aliens_in_column)
+missile_timer = 60
 
 
 # -----Window screen-----
@@ -200,6 +209,45 @@ def all_aliens_dead():
         return True
     return False
 
+# -----Alien's Missile
+alien_missiles = []
+
+# A function to find the lowest alien in the column
+def bottom_aliens():
+    shooters = {}
+
+    for alien in aliens:
+        if not alien.isvisible():
+            continue
+        x = alien.xcor()
+        if x not in shooters or alien.ycor() < shooters[x].ycor():
+            shooters[x] = alien
+
+    return list(shooters.values())
+
+# Missile creation
+def create_alien_missile(x, y):
+    missile = turtle.Turtle()
+    missile.shape("square")
+    missile.shapesize(stretch_wid=0.7, stretch_len=0.25)
+    missile.color("red")
+    missile.penup()
+    missile.goto(x, y)
+    return missile
+
+# A function that randomly choose an alien to shoot a missile
+def missile_shoot():
+    if len(alien_missiles) >= max_alien_missiles:
+        return
+    shooters = bottom_aliens()
+    if len(shooters) == 0:
+        return
+    alien = random.choice(shooters)
+
+    missile = create_alien_missile(alien.xcor(), alien.ycor() - alien_height / 2 - alien_missile_height / 2 - 1)
+    alien_missiles.append(missile)
+
+
 # -----Collision check-----
 def is_collision(t1, w1, h1, t2, w2, h2):
     left1 = t1.xcor() - w1 / 2
@@ -227,6 +275,25 @@ while not game_over:
             bullet.hideturtle()
             is_ready_to_launch = True
 
+    for missile in alien_missiles[:]:
+        missile.sety(missile.ycor() - alien_missile_speed)
+
+        if missile.ycor() < hud_y +  alien_height / 2:
+            missile.hideturtle()
+            alien_missiles.remove(missile)
+            continue
+
+        if is_collision(missile, alien_missile_width, alien_missile_height,player, player_width, player_height):
+            missile.hideturtle()
+            alien_missiles.remove(missile)
+            player_hp -= 1
+            draw_hp()
+            if player_hp <= 0:
+                game_over = True
+
+    if random.randint(1, missile_timer) == 1:
+        missile_shoot()
+
     if time.time() - last_move_time > alien_timer:
         aliens_move()
         last_move_time = time.time()
@@ -238,6 +305,7 @@ while not game_over:
             is_ready_to_launch = True
             alien.hideturtle()
             score += 10
+            missile_timer -= 1
             alien_timer -= alien_timer_decrease
             draw_score()
 
