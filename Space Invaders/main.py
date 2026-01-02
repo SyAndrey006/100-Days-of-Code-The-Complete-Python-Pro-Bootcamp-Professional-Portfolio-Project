@@ -3,19 +3,31 @@ import time
 
 # -----Default setting-----
 screen_width = 800
-screen_height = 700
+screen_height = 600
 step_width = 20
 bullet_speed = 5 #pixels per update cycle
 alien_speed = 20
 alien_speed_down = 20
-alien_distance = 50
+alien_distance_horizontal = 50
+alien_distance_vertical = 35
 aliens_in_row = 8
 aliens_in_column = 3
-INF = 1000
 alien_y_start = (int)(screen_height / 2) - 50
 alien_x_start = -(int)(screen_width / 2) + 100
 
+
+player_width = 20
+player_height = 20
+bullet_width = 3
+bullet_height = 10
+alien_width = 20
+alien_height = 16
+
+hud_y = -screen_height / 2 + 100
+
 game_over = False
+player_hp = 3
+score = 0
 
 
 # -----Window screen-----
@@ -24,6 +36,46 @@ window.title("Space Invaders")
 window.bgcolor("black")
 window.setup(width = screen_width, height = screen_height)
 window.tracer(0)
+
+
+# -----HUD with score and number of lives-----
+# Draw a line that divides board with
+line = turtle.Turtle()
+line.hideturtle()
+line.color("white")
+line.penup()
+line.goto(-screen_width / 2, hud_y)
+line.pendown()
+line.goto(screen_width / 2, hud_y)
+
+# ---Score place---
+score_text = turtle.Turtle()
+score_text.hideturtle()
+score_text.color("white")
+score_text.penup()
+score_text.goto(screen_width / 2 - 150, hud_y - 40)
+
+# ---Number of hp---
+hp_text = turtle.Turtle()
+hp_text.hideturtle()
+hp_text.color("white")
+hp_text.penup()
+hp_text.goto(-screen_width / 2 + 20, hud_y - 40)
+
+
+
+# Draw and update our score
+def draw_score():
+    score_text.clear()
+    score_text.write(f"Score: {score}", font=("Arial", 16, "normal"))
+
+draw_score()
+
+# Draw and update our hp
+def draw_hp():
+    hp_text.clear()
+    hp_text.write(f"HP: {player_hp}", font=("Arial", 16, "normal"))
+draw_hp()
 
 
 # -----Player aka spaceship which can move to left and to right-----
@@ -50,7 +102,7 @@ window.onkey(move_right,"Right")
 # -----Bullet which we shoot thew aliens-----
 bullet = turtle.Turtle()
 bullet.shape("square")
-bullet.shapesize(stretch_wid = 0.5, stretch_len = 0.25)
+bullet.shapesize(stretch_wid = 0.5, stretch_len = 0.15)
 bullet.color("white")
 bullet.penup()
 bullet.hideturtle()
@@ -68,47 +120,75 @@ window.onkey(fire_bullet, "space")
 
 # -----Aliens spaceships on top-----
 aliens = []
-aliens_direction_to_right = []
 
-for y in range (alien_y_start, alien_y_start - aliens_in_column * alien_distance, - alien_distance):
-    for x in range( alien_x_start, alien_x_start + aliens_in_row * alien_distance, alien_distance):
+for y in range (alien_y_start, alien_y_start - aliens_in_column * alien_distance_vertical, - alien_distance_vertical):
+    for x in range( alien_x_start, alien_x_start + aliens_in_row * alien_distance_horizontal, alien_distance_horizontal):
         alien = turtle.Turtle()
         alien.shape("square")
         alien.color("green")
+        alien.shapesize(stretch_wid = 0.8, stretch_len = 1)
         alien.penup()
         alien.goto(x, y)
         aliens.append(alien)
-        aliens_direction_to_right.append(True)
 window.update()
 
+aliens_direction_to_right  = True
 
-
+# A move function for aliens
 def aliens_move():
-    global game_over
-    for i in range(len(aliens)):
-        alien = aliens[i]
-        if alien.xcor() == INF:
-            continue # if it is dead, we skip it
-        if aliens_direction_to_right[i]:
-            if alien.xcor() + alien_speed < screen_width/2:
-                alien.setx(alien.xcor() + alien_speed)
-            else :
-                alien.sety(alien.ycor() - alien_speed_down)
-                aliens_direction_to_right[i] = False
-        else:
-            if alien.xcor() + alien_speed > - screen_width/2:
-                alien.setx(alien.xcor() - alien_speed)
-            else :
-                alien.sety(alien.ycor() - alien_speed_down)
-                aliens_direction_to_right[i] = True
+    global aliens_direction_to_right , game_over
 
-        if is_collision(alien, player):
-            game_over = True
+    need_to_go_down = False
+
+    # Find if we need to go down
+    for alien in aliens:
+        if not alien.isvisible(): #skip dead alien spaceships
+            continue
+        if (aliens_direction_to_right and alien.xcor() + alien_speed >= screen_width/2 - 20) or (not aliens_direction_to_right and alien.xcor() - alien_speed <= - screen_width/2 + 20):
+            need_to_go_down = True
+            break
+
+    # If we need to go down, every visible alien spaceship goes down
+    if need_to_go_down:
+        for alien in aliens:
+            if alien.isvisible():
+                alien.sety(alien.ycor() - alien_speed_down)
+
+        aliens_direction_to_right = not aliens_direction_to_right
+        return
+
+    # Normal move to left or right
+    for alien in aliens:
+        if not alien.isvisible():
+            continue
+
+        if aliens_direction_to_right:
+            alien.setx(alien.xcor() + alien_speed)
+        else:
+            alien.setx(alien.xcor() - alien_speed)
+
+        if is_collision(player, player_width, player_height, alien, alien_width, alien_height):
+            global player_hp
+            player_hp -= 1
+            draw_hp()
+
+            if player_hp <= 0:
+                game_over = True
 
 
 # -----Collision check-----
-def is_collision(t1, t2):
-    return t1.distance(t2) < 20
+def is_collision(t1, w1, h1, t2, w2, h2):
+    left1 = t1.xcor() - w1 / 2
+    right1 = t1.xcor() + w1 / 2
+    top1 = t1.ycor() + h1 / 2
+    bottom1 = t1.ycor() - h1 / 2
+
+    left2 = t2.xcor() - w2 / 2
+    right2 = t2.xcor() + w2 / 2
+    top2 = t2.ycor() + h2 / 2
+    bottom2 = t2.ycor() - h2 / 2
+
+    return (left1 < right2 and right1 > left2 and top1 > bottom2 and bottom1 < top2)
 
 
 # -----Game loop that calculate everything-----
@@ -128,14 +208,17 @@ while not game_over:
         last_move_time = time.time()
 
     for alien in aliens:
-        if is_ready_to_launch == False and is_collision(bullet, alien):
+        if (alien.isvisible() and is_ready_to_launch == False and
+                is_collision(bullet, bullet_width, bullet_height,alien, alien_width, alien_height)):
             bullet.hideturtle()
             is_ready_to_launch = True
-            alien.goto(INF, INF)
+            alien.hideturtle()
+            score += 10
+            draw_score()
 
     time.sleep(0.02)
 
-# -----Game Over
+# -----Game Over-----
 text = turtle.Turtle()
 text.color("red")
 text.penup()
