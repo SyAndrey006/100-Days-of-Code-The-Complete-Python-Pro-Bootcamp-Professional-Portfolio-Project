@@ -1,3 +1,4 @@
+import base64
 from flask import Flask, render_template, request
 import requests
 
@@ -37,9 +38,28 @@ def scan():
 
     return render_template("scan.html", result=result)
 
-@app.route("/generate")
+@app.route("/generate", methods=["GET", "POST"])
 def generate():
-    return render_template("generate.html")
+    barcode_image = None
+
+    if request.method == "POST":
+        text = request.form["barcode_text"]
+
+        url = "https://api.cloudmersive.com/barcode/generate/code128"
+        headers = {
+            "Apikey": API_KEY,
+            "Content-Type": "application/json"
+        }
+        data = {
+            "Value": text
+        }
+
+        response = requests.post(url, json=data, headers=headers)
+
+        if response.status_code == 200:
+            barcode_image = base64.b64encode(response.content).decode("utf-8")
+
+    return render_template("generate.html", barcode_image=barcode_image)
 
 if __name__ == "__main__":
     app.run(debug=True)
