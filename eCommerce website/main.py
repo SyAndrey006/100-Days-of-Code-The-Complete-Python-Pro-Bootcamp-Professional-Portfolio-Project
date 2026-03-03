@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
-stripe.api_key = "sk_test_51T6uCZENdwdTUlsX89c6Wq6QMAxIb7GGDKHAc43nTh1VbWTcDSiXBpzZLSpKzaI4PzS5CqsbNdpsDR2xLhFF1uHx007ULYTF23"
+stripe.api_key = "SEKRET_KEY"
 
 login_manager = LoginManager()
 login_manager.init_app(app)
