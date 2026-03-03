@@ -1,0 +1,41 @@
+{% include "header.html" %}
+
+<header class="masthead" style="background-image: url('{{ url_for('static', filename='assets/img/home-bg.jpg') }}')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>Online Shop</h1>
+                    <span class="subheading">Best products in the world</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+
+        {% for product in products %}
+        <div class="col-md-4 mb-5">
+            <div class="card h-100 shadow-sm border-0">
+                <img class="card-img-top" style="height: 250px; object-fit: contain; padding: 10px;" src="{{ product.img_url }}" alt="{{ product.name }}" >
+
+                <div class="card-body text-center p-4">
+                    <h4 class="card-title fw-bolder">{{ product.name }}</h4>
+                    <p class="text-muted small mb-2">{{ product.description }}</p>
+                    <h5 class="text-primary mt-3">${{ product.price }}</h5>
+                </div>
+
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent text-center">
+                    <a class="btn btn-outline-dark mt-auto" href="{{ url_for('add_to_cart', product_id=product.id) }}">Add
+                        to cart</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+{% include "footer.html" %}
