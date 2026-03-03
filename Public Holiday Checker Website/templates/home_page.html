@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Public Holidays</title>
+</head>
+<body>
+    <h1>Holidays search</h1>
+    <form method="Post">
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" value="2026" required>
+
+        <label for="country_code">Country code (for example, DE, US, GB):</label>
+        <input type="text" id="country_code" name="country_code" value="AT" required>
+
+        <button type="submit">Find Holidays</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if holidays %}
+        <h2>Holidays:</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Local name</th>
+                <th>English name</th>
+                <th>Type</th>
+            </tr>
+
+            {% for holiday in holidays %}
+            <tr>
+                <td>{{ holiday.date }}</td>
+                <td>{{ holiday.localName }}</td>
+                <td>{{ holiday.name }}</td>
+                <td>{{ holiday.types | join(', ') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>
