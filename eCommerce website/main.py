@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
-stripe.api_key = "SEKRET_KEY"
+stripe.api_key = "SECRET_KEY"
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -59,8 +59,8 @@ class CartItem(db.Model):
 with app.app_context():
     db.create_all()
     if not db.session.execute(db.select(Product)).scalars().all():
-        p1 = Product(name="Рюкзак Osprey", description="Крутий рюкзак для подорожей.", price=128.00, img_url="https://m.media-amazon.com/images/I/51KIK-cMSxL._AC_SX522_.jpg")
-        p2 = Product(name="Кабель зарядки", description="USB-C кабель.", price=9.99, img_url="https://m.media-amazon.com/images/I/61qsnd0I-XL._SX522_.jpg")
+        p1 = Product(name="Osprey Fairview Unisex Reiserucksack", description="Cool backpack for traveling.", price=128.00, img_url="https://m.media-amazon.com/images/I/51KIK-cMSxL._AC_SX522_.jpg")
+        p2 = Product(name="Charging Cable", description="USB A to USB C Braided Cable Compatible with iPhone 17/16/16E/15, 16 15 Plus, 17/16 15 Pro Max, Air Charging Cable, AirPods 4/AirPods Pro 2.", price=9.99, img_url="https://m.media-amazon.com/images/I/61qsnd0I-XL._SX522_.jpg")
         db.session.add_all([p1, p2])
         db.session.commit()
 
